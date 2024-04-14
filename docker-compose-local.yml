@@ -10,8 +10,6 @@ services:
       - "8080:8080"
     profiles:
       - infra
-    networks:
-      - net
   sso-postgres:
     container_name: sso-postgres
     image: postgres:15.3
@@ -23,21 +21,3 @@ services:
       - "5432:5432"
     profiles:
       - infra
-    networks:
-      - net
-  sso-integration-tests:
-    container_name: sso-integration-tests
-    build:
-      context: .
-      dockerfile: .docker/integration-tests.Dockerfile
-    environment:
-      BASE_PUBLIC_URL: "http://sso-app:8080"
-      BASE_INTERNAL_URL: "http://sso-app:8082"
-      MOCK_BASE_URL: "http://wiremock:8080"
-      DB_HOST: "sso-postgres"
-    profiles:
-      - tests
-    networks:
-      - net
-networks:
-  net:

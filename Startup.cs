@@ -22,6 +22,14 @@ public class Startup
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
         Console.WriteLine(Configuration.GetConnectionString("DefaultConnection"));
+        
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowReactApp",
+                builder => builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+        });
 
         services.AddScoped<IUserDal, UserDal>();
         services.AddScoped<IUserBl, UserBl>();
@@ -32,6 +40,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseCors("AllowReactApp");
         app.ConfigureDateStorage<ApplicationContext>();
         app.UseMiddleware<IncomingMessagesMiddleware>();
         app.UseMiddleware<BehaviorMiddleware>();
